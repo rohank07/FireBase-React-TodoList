@@ -1,23 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Todo from "./Todo";
+import React, { useState, useEffect } from "react";
+import { Button, FormControl, Input, InputLabel} from "@material-ui/core";
+import db from "./firebase";
+import firebase from 'firebase';
+
 
 function App() {
+  const [todos, setTodos] = useState([]);
+
+  const [input, setInput] = useState("");
+
+  //when the app loads, listen to db and fetch new todos
+
+useEffect (()=>{
+  //this code here loads when app.js loads
+  db.collection('todos').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    //docs is each task I have added
+    //doc.data() return object
+    setTodos(snapshot.docs.map(doc => ({id: doc.id ,todo: doc.data().todo})))
+  })
+}, []) //no dependency here since we want to run the useeffect only on load
+
+  
+  const addToDo = (event) => {
+    event.preventDefault();
+    db.collection('todos').add({ // adding a value to the db (name of the collection) A snapshot is fired
+      todo: input,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    //setTodos([...todos, input]);
+    setInput(""); // clear the input when submitting
+
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Todo List</h1>
+<form>
+      <FormControl>
+        <InputLabel>Write a Todo ✅</InputLabel>
+        <Input value={input} onChange={(event) => setInput(event.target.value)}/>
+      </FormControl>
+      <Button
+        disabled={!input}
+        variant="contained"
+        color="primary"
+        type="submit"
+        onClick={addToDo}>
+        Add Todo
+      </Button>
+</form>
+      <ul>
+        {todos.map(todo => (
+         <Todo todo = {todo}/>
+
+         ))}
+      </ul>
+
+      
     </div>
   );
 }
