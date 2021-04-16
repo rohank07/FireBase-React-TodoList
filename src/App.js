@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button, FormControl, Input, InputLabel} from "@material-ui/core";
 import db from "./firebase";
 import firebase from 'firebase';
-
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -44,9 +44,11 @@ useEffect (()=>{
       </FormControl>
       <Button
         disabled={!input}
+        size ="Medium"
         variant="contained"
         color="primary"
         type="submit"
+        startIcon ={<AddCircleIcon/>}
         onClick={addToDo}>
         Add Todo
       </Button>
