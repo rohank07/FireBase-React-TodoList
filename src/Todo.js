@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
-import {List, Modal, ListItem, ListItemText ,ListItemAvatar, Button, TextField } from "@material-ui/core";
-import './Todo.css'
+import {List, Modal, ListItem, ListItemText , Button, TextField } from "@material-ui/core";
 import db from "./firebase"
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
+
+
+
 
 
 function Todo(props) {
@@ -35,6 +37,15 @@ function Todo(props) {
         },{merge:true}); // does not overwrite the exising id
 
     }
+    const textStyle = {
+            left: '250px',
+            margin: '100px',
+            position: 'absolute',
+          
+    };
+
+
+
     return (
         <>        
         <Modal
@@ -50,10 +61,10 @@ function Todo(props) {
         </Modal>
 
         <List >
-            <ListItem className= "todo_list">
-                <ListItemAvatar>
-                </ListItemAvatar>
-                <ListItemText alignItems ="center" primary = {props.todo.todo} secondary= "⏰" />
+            <ListItem className= "todo_list">                <ListItemText alignItems ="center" primary = {props.todo.todo} secondary= "⏰" />
+                <div style = {textStyle}>
+                    <TextField disabled ="true" label = {props.todo.time}></TextField>
+                </div>
                 <button onClick= {e =>setOpen(true)}> ✏ Edit Me!</button>
                 <DeleteIcon  onClick = {e => db.collection('todos').doc(props.todo.id).delete()}/>
             </ListItem> 

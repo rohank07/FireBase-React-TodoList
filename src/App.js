@@ -18,16 +18,20 @@ useEffect (()=>{
   db.collection('todos').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
     //docs is each task I have added
     //doc.data() return object
-    setTodos(snapshot.docs.map(doc => ({id: doc.id ,todo: doc.data().todo})))
+    setTodos(snapshot.docs.map(doc => ({id: doc.id ,todo: doc.data().todo , time: doc.data().time})))
   })
 }, []) //no dependency here since we want to run the useeffect only on load
 
-  
+  const getDate = () =>{
+    let d = new Date();
+    return d.toDateString();
+  }
   const addToDo = (event) => {
     event.preventDefault();
     db.collection('todos').add({ // adding a value to the db (name of the collection) A snapshot is fired
       todo: input,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      time: getDate()
     })
     //setTodos([...todos, input]);
     setInput(""); // clear the input when submitting
@@ -55,8 +59,8 @@ useEffect (()=>{
 </form>
       <ul>
         {todos.map(todo => (
+         
          <Todo todo = {todo}/>
-
          ))}
       </ul>
 
